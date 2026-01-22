@@ -158,6 +158,43 @@ class FaceDetectionApp:
         self.brightness_slider.set(0)
         self.brightness_slider.pack(side=tk.LEFT, padx=5)
 
+        # Sensitivity control frame
+        sensitivity_frame = tk.Frame(self.detection_frame, bg="#2b2b2b")
+        sensitivity_frame.pack(pady=5)
+
+        sensitivity_label = tk.Label(
+            sensitivity_frame,
+            text="Strictness:",
+            font=("Helvetica", 11),
+            fg="white",
+            bg="#2b2b2b"
+        )
+        sensitivity_label.pack(side=tk.LEFT, padx=5)
+
+        self.sensitivity_slider = tk.Scale(
+            sensitivity_frame,
+            from_=0,
+            to=100,
+            orient=tk.HORIZONTAL,
+            length=250,
+            bg="#2b2b2b",
+            fg="white",
+            highlightthickness=0,
+            troughcolor="#1e1e1e",
+            command=self._on_sensitivity_change
+        )
+        self.sensitivity_slider.set(25)  # Default recommended strictness
+        self.sensitivity_slider.pack(side=tk.LEFT, padx=5)
+
+        self.sensitivity_value_label = tk.Label(
+            sensitivity_frame,
+            text="(Loose)",
+            font=("Helvetica", 10),
+            fg="#888888",
+            bg="#2b2b2b"
+        )
+        self.sensitivity_value_label.pack(side=tk.LEFT, padx=5)
+
         # Status label
         self.detection_status = tk.Label(
             self.detection_frame,
@@ -184,6 +221,22 @@ class FaceDetectionApp:
     def _on_brightness_change(self, value: str) -> None:
         """Handle brightness slider change."""
         self.brightness = int(value)
+
+    def _on_sensitivity_change(self, value: str) -> None:
+        """Handle sensitivity slider change."""
+        # Map 0-100 to tolerance 0.7-0.3 (higher slider = stricter = lower tolerance)
+        slider_val = int(value)
+        tolerance = 0.7 - (slider_val / 100) * 0.4  # 0.7 at 0, 0.3 at 100
+        self.detector.match_tolerance = tolerance
+
+        # Update label
+        if slider_val < 33:
+            label = "(Loose)"
+        elif slider_val < 66:
+            label = "(Medium)"
+        else:
+            label = "(Strict)"
+        self.sensitivity_value_label.config(text=label)
 
     def _browse_image(self) -> None:
         """Open file dialog to select an image."""
