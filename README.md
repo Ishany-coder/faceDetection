@@ -40,7 +40,7 @@ A privacy-focused face recognition application that runs entirely locally on you
 
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
    ```
 
    Note: The `dlib` library (required by `face_recognition`) may take a few minutes to build from source.
@@ -54,7 +54,7 @@ A privacy-focused face recognition application that runs entirely locally on you
 
 2. Run the application:
    ```bash
-   python main.py
+   python3 main.py
    ```
 
 3. Click "Browse Image" to select a reference photo with your face
